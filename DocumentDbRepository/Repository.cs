@@ -15,6 +15,14 @@
 
         private readonly ICollectionProvider collectionProvider;
 
+        public Repository(DocumentClient documentClient, string databaseId) : this(
+            documentClient, 
+            new GenericCollectionProvider<TDocument>(
+                documentClient, 
+                new BasicDatabaseProvider(documentClient, databaseId)))
+        {
+        } 
+
         public Repository(
             DocumentClient documentClient,
             ICollectionProvider collectionProvider)
@@ -74,7 +82,8 @@
         {
             TDocument oldDocument = await this.Get(document.Id);
 
-            return (TDocument)(dynamic)(await this.documentClient.DeleteDocumentAsync(oldDocument.SelfLink))
+            return (TDocument)(dynamic)(await this.documentClient.DeleteDocumentAsync(
+                oldDocument.SelfLink))
                 .Resource;
         }
     }
