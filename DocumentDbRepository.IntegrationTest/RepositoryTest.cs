@@ -1,14 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace DocumentDbRepository.IntegrationTest
+﻿namespace Santhos.DocumentDb.Repository.IntegrationTest
 {
-    [TestClass]
-    public class UnitTest1
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    public class RepositoryTest
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
+        
     }
 }

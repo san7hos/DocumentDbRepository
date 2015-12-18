@@ -44,6 +44,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -58,15 +59,28 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="DocumentClientFactory.cs" />
+    <Compile Include="MainIntegrationTest.cs" />
     <Compile Include="RepositoryTest.cs" />
     <Compile Include="GenericCollectionProviderTest.cs" />
     <Compile Include="BasicDatabaseProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDocument.cs" />
+    <Compile Include="TestSubDocument.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="DocumentDb.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DocumentDbRepository\DocumentDbRepository.csproj">
+      <Project>{8f95fe79-b39b-425b-9a7b-0b52bbc5d6c4}</Project>
+      <Name>DocumentDbRepository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

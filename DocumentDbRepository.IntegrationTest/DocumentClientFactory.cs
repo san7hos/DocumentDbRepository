@@ -4,12 +4,13 @@
 
     using Microsoft.Azure.Documents.Client;
 
-    internal class DocumentClientFactory
+    internal static class DocumentClientFactory
     {
-        public DocumentClient Create()
+        public static DocumentClient Create()
         {
-            throw new NotImplementedException();
-            //return new DocumentClient();
+            return new DocumentClient(
+                new Uri(Config.DocDbEndpoint),
+                Config.DocDbAuth);
         }
     }
 }
