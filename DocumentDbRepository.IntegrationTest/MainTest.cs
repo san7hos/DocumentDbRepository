@@ -8,34 +8,28 @@
     [TestClass]
     public class MainTest
     {
-        private DocumentClient documentClient;
-
-        [TestInitialize]
-        public void Init()
-        {
-            this.documentClient = DocumentClientFactory.Create();
-        }
-
         [TestMethod]
         public async Task Main()
         {
-            
-            await new BasicDatabaseProviderTest(this.documentClient)
-                .CreateOrGetDb();
+            using (var documentClient = DocumentClientFactory.Create())
+            {
+                try
+                {
+                    await new BasicDatabaseProviderTest(documentClient)
+                        .CreateOrGetDb();
 
-            await new GenericCollectionProviderTest(this.documentClient)
-                .CreateOrGetCollection();
+                    await new GenericCollectionProviderTest(documentClient)
+                        .CreateOrGetCollection();
 
-            await new RepositoryTest(this.documentClient).RunOrderedTest();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            this.documentClient.DeleteDatabaseAsync(
-                UriFactory.CreateDatabaseUri(Config.DocDbDatabase)).Wait();
-
-            this.documentClient.Dispose();
+                    await new RepositoryTest(documentClient).RunOrderedTest();
+                }
+                finally
+                {
+                    documentClient.DeleteDatabaseAsync(
+                        UriFactory.CreateDatabaseUri(Config.DocDbDatabase))
+                        .Wait();
+                }
+            }
         }
     }
 }
