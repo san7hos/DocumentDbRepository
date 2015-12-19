@@ -6,7 +6,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class MainIntegrationTest
+    public class MainTest
     {
         private DocumentClient documentClient;
 
@@ -25,6 +25,8 @@
 
             await new GenericCollectionProviderTest(this.documentClient)
                 .CreateOrGetCollection();
+
+            await new RepositoryTest(this.documentClient).RunOrderedTest();
         }
 
         [TestCleanup]

@@ -61,7 +61,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="DocumentClientFactory.cs" />
-    <Compile Include="MainIntegrationTest.cs" />
+    <Compile Include="MainTest.cs" />
     <Compile Include="RepositoryTest.cs" />
     <Compile Include="GenericCollectionProviderTest.cs" />
     <Compile Include="BasicDatabaseProviderTest.cs" />

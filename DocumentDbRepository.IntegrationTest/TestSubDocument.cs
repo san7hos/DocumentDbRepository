@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
 
-        public double Widht { get; set; }
+        public double Width { get; set; }
 
         public int Count { get; set; }
     }
