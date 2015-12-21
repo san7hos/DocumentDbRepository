@@ -1,7 +1,7 @@
 # DocumentDbRepository
 **DocumentDbRepository is** a dependency injection friendly **repository pattern 
 for Azure DocumentDb**.
-It simplifies user workflow with Azure DocumentDb 
+It simplifies the communication with Azure DocumentDb 
 by providing an additional layer on top of 
 [Azure DocumentDb Client](https://www.nuget.org/packages/Microsoft.Azure.DocumentDB/).
 

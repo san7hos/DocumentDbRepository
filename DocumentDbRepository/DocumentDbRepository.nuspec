@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/San7hos/DocumentDbRepository</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>
+      Initial package
+      - Generic repository with two constructors
+      - BasicDatabaseProvider that derives from IDatabaseProvider
+      - GenericCollectionProvider that derives from ICollectionProvider
+      - Everything tested with a integration test
+      - see project url for more information
+    </releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Azure DocumentDb DocumentClient Repository</tags>
+  </metadata>
+</package>
