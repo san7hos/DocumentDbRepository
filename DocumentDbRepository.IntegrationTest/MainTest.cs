@@ -15,11 +15,9 @@
             {
                 try
                 {
-                    await new BasicDatabaseProviderTest(documentClient)
-                        .CreateOrGetDb();
+                    await new BasicDatabaseProviderTest(documentClient).RunOrderedTest();
 
-                    await new GenericCollectionProviderTest(documentClient)
-                        .CreateOrGetCollection();
+                    await new GenericCollectionProviderTest(documentClient).RunOrderedTest();
 
                     await new RepositoryTest(documentClient).RunOrderedTest();
                 }
