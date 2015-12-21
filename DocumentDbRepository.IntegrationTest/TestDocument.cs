@@ -32,7 +32,6 @@ namespace Santhos.DocumentDb.Repository.IntegrationTest
             return
                 this.Seed == testDocument.Seed &&
                 this.Name == testDocument.Name &&
-                Math.Abs((this.Created - testDocument.Created).TotalSeconds) < CreatedDelta &&
                 this.MainDocument.Equals(testDocument.MainDocument) &&
                 this.CompareOptionalDocuments(testDocument);
         }

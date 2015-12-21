@@ -31,34 +31,35 @@
             this.collectionProvider = collectionProvider;
         }
 
-        public async Task<IOrderedQueryable<TDocument>> CreateDocumentQuery()
+        public virtual async Task<IOrderedQueryable<TDocument>> CreateDocumentQuery()
         {
             return this.documentClient.CreateDocumentQuery<TDocument>(
                 await this.collectionProvider.GetCollectionDocumentsLink());
         }
 
-        public async Task<IOrderedQueryable<TDocument>> GetAll()
+        public virtual async Task<IOrderedQueryable<TDocument>> GetAll()
         {
             return await this.CreateDocumentQuery();
         }
 
-        public async Task<IQueryable<TDocument>> GetWhere(Expression<Func<TDocument, bool>> predicate)
+        public virtual async Task<IQueryable<TDocument>> GetWhere(Expression<Func<TDocument, bool>> predicate)
         {
             return (await this.CreateDocumentQuery()).Where(predicate);
         }
 
-        public async Task<TDocument> Get(Expression<Func<TDocument, bool>> predicate)
+        public virtual async Task<TDocument> Get(Expression<Func<TDocument, bool>> predicate)
         {
-            return (await this.CreateDocumentQuery())
-                .FirstOrDefault(predicate);
+            return (await this.GetWhere(predicate))
+                .AsEnumerable()
+                .FirstOrDefault();
         }
 
-        public async Task<TDocument> Get(string id)
+        public virtual async Task<TDocument> Get(string id)
         {
             return await this.Get(d => d.Id == id);
         }
 
-        public async Task<TDocument> Create(TDocument document)
+        public virtual async Task<TDocument> Create(TDocument document)
         {
             return (TDocument)(dynamic)(await this.documentClient.CreateDocumentAsync(
                 await this.collectionProvider.GetCollectionDocumentsLink(), 
@@ -66,11 +67,14 @@
                 .Resource;
         }
 
-        public async Task<TDocument> Update(TDocument document)
+        public virtual async Task<TDocument> Update(TDocument document)
         {
-            string selfLink = string.IsNullOrWhiteSpace(document.SelfLink)
-                                  ? (await this.Get(document.Id)).SelfLink
-                                  : document.SelfLink;
+            var selfLink = await this.GetDocumentSelfLink(document);
+
+            if (string.IsNullOrWhiteSpace(selfLink))
+            {
+                throw new InvalidOperationException("Document does not exist in collection");
+            }
 
             return (TDocument)(dynamic)(await this.documentClient.ReplaceDocumentAsync(
                 selfLink, 
@@ -78,13 +82,23 @@
                 .Resource;
         }
 
-        public async Task<TDocument> Delete(TDocument document)
+        public virtual async Task Delete(TDocument document)
         {
-            TDocument oldDocument = await this.Get(document.Id);
+            var selfLink = await this.GetDocumentSelfLink(document);
 
-            return (TDocument)(dynamic)(await this.documentClient.DeleteDocumentAsync(
-                oldDocument.SelfLink))
-                .Resource;
+            if (string.IsNullOrWhiteSpace(selfLink))
+            {
+                throw new InvalidOperationException("Document does not exist in collection");
+            }
+
+            await this.documentClient.DeleteDocumentAsync(selfLink);
+        }
+
+        private async Task<string> GetDocumentSelfLink(TDocument document)
+        {
+            return string.IsNullOrWhiteSpace(document.SelfLink)
+                                  ? (await this.Get(document.Id))?.SelfLink
+                                  : document.SelfLink;
         }
     }
 }

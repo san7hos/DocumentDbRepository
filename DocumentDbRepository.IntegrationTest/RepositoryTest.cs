@@ -14,6 +14,8 @@
 
         private readonly Repository<TestDocument> repository;
 
+        private readonly Random random = new Random();
+
         public RepositoryTest(DocumentClient documentClient)
         {
             this.repository = new Repository<TestDocument>(documentClient, Config.DocDbDatabase);
@@ -21,6 +23,8 @@
 
         public async Task RunOrderedTest()
         {
+            await this.CreateQuery();
+
             await this.GetAllEmpty();
 
             await this.Create();
@@ -28,13 +32,134 @@
             await this.GetAll();
 
             await this.GetWhere();
+
+            await this.GetPredicate();
+
+            await this.GetId();
+
+            await this.Update();
+
+            await this.Delete();
+
+            await this.GetNonExistent();
+
+            await this.UpdateNonExistent();
+
+            await this.DeleteNonExistent();
+        }
+
+        private async Task CreateQuery()
+        {
+            var query = await this.repository.CreateDocumentQuery();
+
+            Assert.IsNotNull(query, "query != null");
+        }
+
+        private async Task DeleteNonExistent()
+        {
+            try
+            {
+                await this.repository.Delete(new TestDocument
+                                             {
+                                                 Seed = TestDocumentCount + 1
+                                             });
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+
+            Assert.Fail();
+        }
+
+        private async Task UpdateNonExistent()
+        {
+            try
+            {
+                await this.repository.Update(new TestDocument
+                                             {
+                                                 Seed = TestDocumentCount + 1
+                                             });
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+
+            Assert.Fail();
+        }
+
+        private async Task GetNonExistent()
+        {
+            var nonexistent = await this.repository.Get(d => d.Seed == TestDocumentCount + 1);
+
+            Assert.IsNull(nonexistent, "nonexistent != null");
+        }
+
+        private async Task Delete()
+        {
+            var seed = this.GetRandomSeed();
+            var randomDocument = await this.repository.Get(d => d.Seed == seed);
+
+            await this.repository.Delete(randomDocument);
+
+            var deletedDocument = await this.repository.Get(d => d.Seed == seed);
+
+            Assert.IsNull(deletedDocument, "deletedDocument != null");
+        }
+
+        private async Task Update()
+        {
+            var seed = this.GetRandomSeed();
+            var randomDocument = await this.repository.Get(d => d.Seed == seed);
+
+            string updatedName = "Different name";
+            randomDocument.Name = updatedName;
+            var returnedDocument = await this.repository.Update(randomDocument);
+
+            Assert.AreEqual(
+                updatedName,
+                returnedDocument.Name,
+                "Document name has not been updated");
+
+            var updatedDocument = await this.repository.Get(d => d.Seed == seed);
+
+            Assert.IsTrue(
+                updatedDocument.Equals(returnedDocument) &&
+                updatedDocument.Equals(randomDocument),
+                "Updated document does not equal to chosen manually updated document");
+
+            Assert.IsFalse(
+                TestDocumentFactory.Create(seed).Equals(updatedDocument),
+                "Document has not been updated");
+        }
+
+        private async Task GetId()
+        {
+            var seed = this.GetRandomSeed();
+            var randomDocument = await this.repository.Get(d => d.Seed == seed);
+
+            var randomDocById = await this.repository.Get(randomDocument.Id);
+
+            Assert.IsTrue(
+                randomDocument.Equals(randomDocById),
+                "Document obtained by predicate is different from document obtained by id");
+        }
+
+        private async Task GetPredicate()
+        {
+            var seed = this.GetRandomSeed();
+            var randomDocument = await this.repository.Get(d => d.Seed == seed);
+
+            Assert.IsTrue(
+                TestDocumentFactory.Create(seed).Equals(randomDocument),
+                $"Test document with seed {seed} is invalid");
         }
 
         private async Task GetWhere()
         {
-            var random = new Random();
-            var seed1 = random.Next(TestDocumentCount);
-            var seed2 = random.Next(TestDocumentCount);
+            var seed1 = this.GetRandomSeed();
+            var seed2 = this.GetRandomSeed();
 
             List<TestDocument> testDocuments = (await this.repository
                                                           .GetWhere(d => d.Seed == seed1 || d.Seed == seed2))
@@ -68,11 +193,11 @@
                 testDocuments.Count,
                 $"Collection does not contain {TestDocumentCount} documents");
 
-            int seed = new Random().Next(TestDocumentCount);
-            TestDocument random = testDocuments.OrderBy(d => d.Seed).ElementAt(seed);
+            int seed = this.GetRandomSeed();
+            TestDocument randomDocument = testDocuments.OrderBy(d => d.Seed).ElementAt(seed);
 
             Assert.IsTrue(
-                TestDocumentFactory.Create(seed).Equals(random),
+                TestDocumentFactory.Create(seed).Equals(randomDocument),
                 $"Test document on index {seed} is invalid");
         }
 
@@ -85,6 +210,9 @@
             }
         }
 
-
+        private int GetRandomSeed()
+        {
+            return this.random.Next(TestDocumentCount);
+        }
     }
 }
