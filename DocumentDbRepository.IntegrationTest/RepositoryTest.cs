@@ -10,7 +10,7 @@
 
     public class RepositoryTest
     {
-        private const int TestDocumentCount = 7;
+        private const int TestDocumentCount = 15;
 
         private readonly Repository<TestDocument> repository;
 
@@ -26,13 +26,36 @@
             await this.Create();
 
             await this.GetAll();
+
+            await this.GetWhere();
+        }
+
+        private async Task GetWhere()
+        {
+            var random = new Random();
+            var seed1 = random.Next(TestDocumentCount);
+            var seed2 = random.Next(TestDocumentCount);
+
+            List<TestDocument> testDocuments = (await this.repository
+                                                          .GetWhere(d => d.Seed == seed1 || d.Seed == seed2))
+                .ToList()
+                .OrderBy(d => d.Seed)
+                .ToList();
+
+            Assert.IsTrue(
+                TestDocumentFactory.Create(seed1).Equals(testDocuments.Find(d => d.Seed == seed1)),
+                $"Test document with seed {seed1} is invalid");
+
+            Assert.IsTrue(
+                TestDocumentFactory.Create(seed2).Equals(testDocuments.Find(d => d.Seed == seed2)),
+                $"Test document with seed {seed2} is invalid");
         }
 
         private async Task GetAllEmpty()
         {
             Assert.AreEqual(
                 0,
-                (await this.repository.GetAll()).AsEnumerable().Count(), 
+                (await this.repository.GetAll()).AsEnumerable().Count(),
                 "Collection is not empty");
         }
 
@@ -44,37 +67,24 @@
                 TestDocumentCount,
                 testDocuments.Count,
                 $"Collection does not contain {TestDocumentCount} documents");
+
+            int seed = new Random().Next(TestDocumentCount);
+            TestDocument random = testDocuments.OrderBy(d => d.Seed).ElementAt(seed);
+
+            Assert.IsTrue(
+                TestDocumentFactory.Create(seed).Equals(random),
+                $"Test document on index {seed} is invalid");
         }
 
         private async Task Create()
         {
             for (int i = 0; i < TestDocumentCount; i++)
             {
-                var testDocument = new TestDocument
-                                   {
-                                       Name = $"Test Doc {i}",
-                                       Created = DateTime.Now.AddDays(-i % 3),
-                                       MainDocument = new TestSubDocument
-                                                      {
-                                                          Name = $"Main Subdoc {i}",
-                                                          Count = i,
-                                                          Width = i * i + 0.5
-                                                      },
-                                       OptionalDocuments = new List<TestSubDocument>()
-                                   };
-                
-                for (int j = 0; j < i % 4; j++)
-                {
-                    testDocument.OptionalDocuments.Add(new TestSubDocument
-                                                       {
-                                                           Name = $"Subdoc {i}.{j}",
-                                                           Count = j,
-                                                           Width = j + 5.75
-                                                       });
-                }
-
-                await this.repository.Create(testDocument);
+                await this.repository.Create(
+                    TestDocumentFactory.Create(i));
             }
         }
+
+
     }
 }

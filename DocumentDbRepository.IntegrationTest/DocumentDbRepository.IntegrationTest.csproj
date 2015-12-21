@@ -67,6 +67,7 @@
     <Compile Include="BasicDatabaseProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDocument.cs" />
+    <Compile Include="TestDocumentFactory.cs" />
     <Compile Include="TestSubDocument.cs" />
   </ItemGroup>
   <ItemGroup>
