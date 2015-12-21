@@ -10,7 +10,7 @@
 
     public class RepositoryTest
     {
-        private const int TestDocumentCount = 15;
+        private const int TestDocumentCount = 7;
 
         private readonly Repository<TestDocument> repository;
 
@@ -62,8 +62,8 @@
                                                       },
                                        OptionalDocuments = new List<TestSubDocument>()
                                    };
-
-                for (int j = 0; j < i % 4; i++)
+                
+                for (int j = 0; j < i % 4; j++)
                 {
                     testDocument.OptionalDocuments.Add(new TestSubDocument
                                                        {
