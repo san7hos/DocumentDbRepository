@@ -11,12 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-      Initial package
-      - Generic repository with two constructors
-      - BasicDatabaseProvider that derives from IDatabaseProvider
-      - GenericCollectionProvider that derives from ICollectionProvider
-      - Everything tested with a integration test
-      - see project url for more information
+      - updated code documentation
     </releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>Azure DocumentDb DocumentClient Repository</tags>
