@@ -1,6 +1,6 @@
 # DocumentDbRepository
 
-[![NuGet version](https://badge.fury.io/nu/Santhos.DocumentDb.Repository@2x.png)](https://badge.fury.io/nu/Santhos.DocumentDb.Repository)
+[![NuGet version](https://badge.fury.io/nu/Santhos.DocumentDb.Repository.svg)](https://badge.fury.io/nu/Santhos.DocumentDb.Repository)
 
 **DocumentDbRepository is** a dependency injection friendly **repository pattern 
 for Azure DocumentDb**.
