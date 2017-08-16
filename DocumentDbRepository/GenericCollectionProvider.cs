@@ -37,7 +37,7 @@
         /// returns the instance. If the collection does not exist, creates a new instance and returns it.
         /// </summary>
         /// <returns>Document collection where the documents are stored</returns>
-        public Task<DocumentCollection> CreateOrGetCollection() => documentClient.CreateDocumentCollectionIfNotExistsAsync(await this.databaseProvider.GetDbSelfLink(), new DocumentCollection { Id = this.GetCollectionId() });
+        public async Task<DocumentCollection> CreateOrGetCollection() => await documentClient.CreateDocumentCollectionIfNotExistsAsync(await this.databaseProvider.GetDbSelfLink(), new DocumentCollection { Id = this.GetCollectionId() });
 
         /// <summary>
         /// Gets the collection documents link. Calls the <see cref="CreateOrGetCollection"/> method
