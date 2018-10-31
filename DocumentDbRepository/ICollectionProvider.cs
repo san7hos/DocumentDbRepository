@@ -1,8 +1,7 @@
 ﻿namespace Santhos.DocumentDb.Repository
 {
-    using System.Threading.Tasks;
-
     using Microsoft.Azure.Documents;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A provider for DocumentDb collections created and stored in the database.

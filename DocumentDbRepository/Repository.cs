@@ -1,13 +1,11 @@
 ﻿namespace Santhos.DocumentDb.Repository
 {
+    using Microsoft.Azure.Documents;
+    using Microsoft.Azure.Documents.Client;
     using System;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-
-    using Microsoft.Azure.Documents;
-    using Microsoft.Azure.Documents.Client;
-    using Microsoft.Azure.Documents.Linq;
 
     /// <summary>
     /// A generic repository that provides basic document operations.
@@ -132,7 +130,7 @@
         }
 
         /// <summary>
-        /// Deletes the specified document. Uses the document self link, 
+        /// Deletes the specified document. Uses the document self link,
         /// see <seealso cref="Update(TDocument)"/>
         /// </summary>
         /// <param name="document">Document to delete</param>
